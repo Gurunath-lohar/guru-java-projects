@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.test.association">
+	<class name="Bid" table="bid">
+		<id name="id" column="bid_id" type="integer" unsaved-value="null">
+			<generator class="assigned"/>
+		</id>
+		<property name="item_id" type="integer"/>
+		<property name="bid_value" type="integer"/>
+		<many-to-one name="item" 
+					column="Item_id" 
+					class="Item" 
+					not-null="true"/>	
+		<!-- this many to one is for creating one to one with item, the 
+		     property unique restricts item being used by two bids i.e., 
+		     item can have single bid -->
+		 <many-to-one name="item" 
+					column="Item_id" 
+					class="Item" 
+					not-null="true"
+					unique="true"/>	
+	</class>
+</hibernate-mapping>

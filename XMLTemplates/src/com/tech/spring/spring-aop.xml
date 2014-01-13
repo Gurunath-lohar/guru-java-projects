@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+     <context:component-scan base-package="com.test.spring.context.advanced"/> <!-- new feature in spring2.5 for auto detect -->
+     
+     <bean name="advice" class="com.test.spring.aop.Advice">
+     </bean>
+     
+     <aop:config>
+		<aop:aspect ref="advice">
+		<aop:before pointcut="execution(* com.springinaction.springidol.Performer.perform(..))"
+					method="takeSeats" />
+		<aop:before pointcut="execution(* com.springinaction.springidol.Performer.perform(..))"
+					method="turnOffCellPhones" />
+		<aop:after-returning pointcut="execution(* com.springinaction.springidol.Performer.perform(..))"
+					method="applaud" />
+		<aop:after-throwing pointcut="execution(* com.springinaction.springidol.Performer.perform(..))"
+					method="demandRefund" />
+		</aop:aspect>
+	 </aop:config>
+	 
+	 <!-- Using point cut ref, around advice see the parenthesis -->
+	 <aop:config>
+		<aop:aspect ref="advice">
+		<aop:pointcut id="performance" 
+			expression= "execution(* com.springinaction.springidol.Performer.perform(..))"/>
+		<aop:before pointcut-ref="performance" method="takeSeats" />
+		<aop:around pointcut-ref="performance2" method="watchPerformance()" />
+		</aop:aspect>
+	 </aop:config>
+ 	     
+ 	 <!-- passing arguments to both advice and adviced method -->
+ 	 <aop:config>
+	 	<aop:aspect ref="magician">
+		<aop:pointcut id="thinking"
+			expression="execution(*
+					com.springinaction.springidol.Thinker.thinkOfSomething(String))
+					and args(thoughts)" /><!-- thoughts is arg to adviced method thinkOfSomething -->
+		<aop:before pointcut-ref="thinking" method="interceptThoughts" arg-names="thoughts" />
+		<!-- thoughts is arg to advice method interceptThoughts -->
+		</aop:aspect>
+	 </aop:config>
+	 
+	 
+</beans>

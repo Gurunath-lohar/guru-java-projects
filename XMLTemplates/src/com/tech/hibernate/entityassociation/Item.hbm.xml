@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.test.association">
+	<class name="Item" table="item">
+		<id name="id" column="item_id" type="integer" unsaved-value="null">
+			<generator class="assigned"/>
+		</id>
+		<property name="item_name" type="string" length="100"/>
+		<property name="description" type="string" length="100"/>
+		<property name="initial_price" type="integer"/>
+		<!-- one to many using different collections -->
+		<set name="bids" inverse="true" cascade="all">
+			<key column="Item_id"/>
+			<one-to-many class="Bid"/>
+		</set>		
+		<idbag name="bids" inverse="true" cascade="all">
+			<collection-id type="long" column="CATEGORY_ITEM_ID">
+				<generator class="sequence"/>
+			</collection-id>
+			<key column="Item_id"/>
+			<one-to-many class="Bid"/>
+		</idbag>
+		<list name="bids" inverse="true" cascade="all">
+			<key column="Item_id"/>
+			<index column="Bid_Position"/> 
+			<one-to-many class="Bid"/>
+		</list>
+		<!-- one to many using different collections -->
+		<set name="categories" table="CATEGORY_ITEM" lazy="true" inverse="true" 
+			 casacde="save-update">
+			<key column="Item_id"/>
+			<many-to-many class="Category" column="CATEGORY_ID"/>	 
+		</set>
+		
+		<!-- this mapping is for creating one to one with Bid, the property-ref tag
+			 is to indicate the mapped many to one property in Bid mapping file -->
+		<one-to-one name="bid" class="Bid" cascade="save-update" property-ref="item"/>
+		
+		<!--  the following mapping ensures that the bid and item both will have same
+			  same primary key generated -->
+		<class name="Item" table="Item">
+			<id name="id" column="item_id">
+				<generator class="foreign">
+					<param name="property">bid</param>
+				</generator>
+			</id>
+			<one-to-one name="bid" class="Bid" constrained="true"/>
+		</class>	
+	</class>
+</hibernate-mapping>

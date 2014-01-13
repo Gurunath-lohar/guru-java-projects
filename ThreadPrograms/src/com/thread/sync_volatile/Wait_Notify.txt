@@ -1,0 +1,32 @@
+package javathreads.examples.ch04.example1;
+...
+public class AnimatedCharacterDisplayCanvas extends CharacterDisplayCanvas
+                    implements CharacterListener, Runnable {
+    private boolean done = true;
+    ...
+
+    public synchronized void run( ) {
+        while (true) {
+            try {
+                if (done) {
+                    wait( );
+                } else {
+                    repaint( );
+                    wait(100);
+                }
+            } catch (InterruptedException ie) {
+                return;
+            }
+        }
+    }
+
+    public synchronized void setDone(boolean b) {
+        done = b;
+        if (timer == null) {
+            timer = new Thread(this);
+            timer.start( );
+        }
+        if (!done)
+            notify( );
+    }
+ }

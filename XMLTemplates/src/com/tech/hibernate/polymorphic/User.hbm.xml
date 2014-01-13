@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.test.association">
+	<!-- Table per class hierarchy -->
+	<class name="User" table="USER">
+		<id name="id" column="USER_ID" type="long">
+			<generator class="native"/>
+		</id>
+		<!-- for table per class hierarchy and table per sub class -->
+		<set name="billingDetails" lazy="true" cascade="save-update" inverse="true">
+			<key column="USER_ID"/>
+			<one-to-many class="BillingDetails"/>
+		</set>
+		
+		<!-- In case of table per class, we'll have two separate tables credit card 
+			 and bank account. Billing details properties will be present both tables -->
+		<any name="billingDetails" meta-type="string" id-type="long" cascade="save-update">
+			<meta-value value="CREDIT_CARD" class="CreditCard"/>
+			<meta-value value="BANK_ACCOUNT"class="BankAccount"/>
+			<column name="BILLING_DETAILS_TYPE"/>
+			<column name="BILLING_DETAILS_ID"/>
+		</any>
+	</class>
+</hibernate-mapping>

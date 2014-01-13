@@ -1,0 +1,20 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:aop="http://www.springframework.org/schema/aop"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+	 <!--bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" /-->
+	 <aop:aspectj-autoproxy />
+	 <bean id="testTarget" class="com.test.spring.aop.TestTarget"/>
+     <bean id="testAopadvice" class="com.test.spring.aop.TestAdvice"/>
+     <aop:config>
+     	<aop:aspect ref="testAopadvice">
+     		<aop:pointcut id="testPointCut" expression="execution( *.printName())" />
+     		<aop:before method="callBeforeMethod" pointcut-ref="testPointCut"/> 
+     	</aop:aspect>
+     </aop:config>
+     
+       
+</beans>
