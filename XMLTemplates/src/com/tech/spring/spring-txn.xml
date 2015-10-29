@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+     <bean id="dataSource" 
+     	class="org.springframework.jdbc.datasource.DriverManagerDataSource (non pooled) /
+     		   org.apache.commons.dbcp.BasicDataSource(pooled)">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/mysql" />
+		<property name="username" value="root" />
+		<property name="password" value="mysql" />
+		<!-- pooled data source properties -->
+		<property name="initialSize" value="5" />
+		<property name="maxActive" value="10" />
+	</bean>
+	
+	<!-- JDBC TXN  -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	<!-- JDBC TXN  -->
+	
+	<!-- HIBERNATE TXN  -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<!-- HIBERNATE TXN -->
+	
+	<!-- JTA TXN  -->
+	<bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+		<property name="transactionManagerName" value="java:/TransactionManager" />	
+	</bean>
+	<!-- JTA TXN  -->
+	
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="*" propagation="SUPPORTS" read-only="true"/>
+			<!-- name of method--txn demarcation-------txn isolation-->
+		</tx:attributes>
+	</tx:advice>
+	<!-- Applying Txns via AOP -->
+	<aop:config>
+		<aop:advisor
+			pointcut="execution(* *..SpitterService.*(..))" advice-ref="txAdvice"/>
+	</aop:config>
+		
+</beans>

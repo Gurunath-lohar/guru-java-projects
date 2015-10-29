@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+     <bean name="printClass" class="com.test.spring.context.conventional.PrintClass">
+     	<!--<constructor-arg>
+	     	<value>108</value>
+     	</constructor-arg>
+     	<constructor-arg>
+	     	<value>hi</value>
+     	</constructor-arg>
+     	-->
+     	<!--  OR Following way -->
+     	<constructor-arg value="111"/>
+     	<constructor-arg value="hi"/>
+     	<property name="testBean" ref="testBean"/>
+     	<property name="nc" ref="nextClass"/>
+     	<!--Empty list <property name="ls">
+     	<list>
+     	</list>
+     	</property>
+     	-->
+     	<property name="ls">
+	     	<list>
+	     		<value>11</value>
+	     		<value>12</value>
+	     		<ref bean="testBean"/>
+	     	</list>
+     	</property>
+     	<!--Set 
+     	<property name="set">
+	     	<set>
+	     		<value>11</value>
+	     		<value>12</value>
+	     	</set>
+     	</property>
+     	-->
+     	<!--Empty map <property name="map">
+     		<map>
+     		</map>
+     	</property>
+     	-->
+     	<property name="map">
+     		<map>
+     			<entry key="hi">
+     				<value>123</value>
+     			</entry>
+     			<entry key="hello" value="245"/>
+     			<entry key="ref" value-ref="testBean"/>
+     			<entry key-ref="nextClass" value-ref="testBean"/>
+     		</map>
+     	</property>
+     	<!--java.util.Properties allows only string as value
+     	<property name="prop">
+     		<props>
+     			<prop key="hi">string</prop>
+     		</props>
+     	</property>
+     	Setting null value
+     	<property name="nullValue"><null/></property>
+     	-->
+     </bean>     
+     <bean name="nextClass" class="com.test.spring.context.conventional.NextClass">
+     	<property name="testBean" ref="testBean"/>
+     	<property name="lc" ref="lastClass"/>
+     </bean>
+     <bean name="lastClass" class="com.test.spring.context.conventional.LastClass">
+     	<property name="testBean" ref="testBean"/>
+     </bean>
+     <bean name="testBean" class="com.test.spring.context.conventional.TestBean">
+     	<property name="id" value="17"/>
+     	<property name="name" value="Gurunath"/>
+     </bean>  
+</beans>

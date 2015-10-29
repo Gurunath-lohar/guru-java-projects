@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+     <bean id="dataSource" 
+     	class="org.springframework.jdbc.datasource.DriverManagerDataSource (non pooled) /
+     		   org.apache.commons.dbcp.BasicDataSource(pooled)">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/mysql" />
+		<property name="username" value="root" />
+		<property name="password" value="mysql" />
+		<!-- pooled data source properties -->
+		<property name="initialSize" value="5" />
+		<property name="maxActive" value="10" />
+	</bean>
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate">
+		<constructor-arg ref="dataSource" />
+	</bean>
+	<!-- add template to cutom DAO class -->
+	<bean id="spitterDao" class="com.habuma.spitter.SimpleJdbcTemplateSpitterDao">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+	</bean>
+	<!-- extend the spring's DAO support class from custom dao, then no need to add
+	     jdbc template property to custom DAO. getSimpleJdbcTemplate() will fetch 
+	     the template -->
+	     
+	     
+	<!-- SPRING HIBERNATE -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mappingResources">
+			<list>
+				<value>Spitter.hbm.xml </value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="dialect">org.hibernate.dialect.HSQLDialect</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- add this session factory to custom DAO -->
+	
+	<!-- SPRING TRANSACTIONS -->
+	
+</beans>
